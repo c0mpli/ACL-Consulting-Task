@@ -26,7 +26,7 @@ export class TelegramService {
   }
 
   // //sends daily notification to users
-  @Cron('0 10 * * *')
+  @Cron('0 10 * * *', { timeZone: 'Asia/Kolkata' })
   async handleCronDaily() {
     const subscribedUsers = await User.find({
       isSubscribed: true,
@@ -38,7 +38,7 @@ export class TelegramService {
   }
 
   //sends hourly notification to users
-  @Cron('0 * * * *')
+  @Cron('0 * * * *', { timeZone: 'Asia/Kolkata' })
   async handleCronHourly() {
     const subscribedUsers = await User.find({
       isSubscribed: true,
@@ -55,7 +55,7 @@ export class TelegramService {
     const username = msg.chat.username || '';
     this.bot.sendMessage(
       msg.chat.id,
-      'Welcome to AST Consulting.\n\nHere are my commands.\n\n/price {model} - to get the price of iphones.\n/help - to get the list of commands.\n/frequency - to change the frequency of messages recieved (hourly/daily). Deafult is set to daily.\n/model - Set the model you want to recieve regular notifications of (iphone 11, iphone 12, iphone 13, iphone 14).\n/subscribe - to subscribe for recieving messages.\n/unsubscribe - to unsubscribe for recieving messages.',
+      'Welcome to AST Consulting.\n\nHere are my commands.\n\n/price {model} - to get the price of iphones.\n/help - to get the list of commands.\n/frequency {mode} - to change the frequency of messages recieved (hourly/daily). Deafult is set to daily.\n/model {model}- Set the model you want to recieve regular notifications of (iphone 11, iphone 12, iphone 13, iphone 14).\n/subscribe - to subscribe for recieving messages.\n/unsubscribe - to unsubscribe for recieving messages.',
       {
         reply_markup: {
           keyboard: [
