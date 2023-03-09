@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { AdminModule } from './admin/admin.module';
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -21,6 +22,7 @@ let uri = process.env.DB_URI;
     ScheduleModule.forRoot(),
     MongooseModule.forRoot(uri),
     AuthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
