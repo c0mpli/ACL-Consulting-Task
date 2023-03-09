@@ -12,16 +12,22 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState } from 'react';
+import useLogin from '../hooks/useLogin';
 
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const [email,setEmail] = useState("") 
+  const [password,setPassword] = useState("") 
+  const {login,error,isLoading} = useLogin()
+
+  const handleSubmit = async(event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    await login(email,password)
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      email: email,
+      password: password,
     });
   };
 
@@ -45,7 +51,6 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -58,6 +63,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={(e)=>{setEmail(e.target.value)}}
             />
             <TextField
               margin="normal"
@@ -68,15 +75,21 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={(e)=>{setPassword(e.target.value)}}
+
             />
             <Button
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
+              disabled={isLoading}
             >
               Sign In
             </Button>
+            {error && (error)}
           </Box>
         </Box>
       </Container>
