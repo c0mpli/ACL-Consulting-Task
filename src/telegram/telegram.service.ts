@@ -1,18 +1,27 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from '../auth/schemas/user.schema';
+
 const TelegramBot = require('node-telegram-bot-api');
 const cheerio = require('cheerio');
 const axios = require('axios');
-const User = require('../models/User');
+const dotenv = require("dotenv");
+dotenv.config();
 
-const TELEGRAM_TOKEN = '6035059585:AAEbaxlEwiGIb2MmDGyBKPGcG36U8l4xLu0';
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 
 @Injectable()
 export class TelegramService {
   private readonly bot: any;
   private logger = new Logger(TelegramService.name);
 
-  constructor() {
+  constructor(
+    @InjectModel(User.name)
+    private userModel: Model<User>
+  ) {
+
     this.bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
     //setting command replies
@@ -28,7 +37,7 @@ export class TelegramService {
   // //sends daily notification to users
   @Cron('0 10 * * *', { timeZone: 'Asia/Kolkata' })
   async handleCronDaily() {
-    const subscribedUsers = await User.find({
+    const subscribedUsers = await this.userModel.find({
       isSubscribed: true,
       frequency: 'daily',
     });
@@ -40,7 +49,7 @@ export class TelegramService {
   //sends hourly notification to users
   @Cron('0 * * * *', { timeZone: 'Asia/Kolkata' })
   async handleCronHourly() {
-    const subscribedUsers = await User.find({
+    const subscribedUsers = await this.userModel.find({
       isSubscribed: true,
       frequency: 'hourly',
     });
@@ -72,9 +81,9 @@ export class TelegramService {
     );
 
     //adding new user to database
-    const usercheck = await User.find({ userId: userId });
+    const usercheck = await this.userModel.find({ userId: userId });
     if (usercheck.length > 0) return;
-    const newUser = new User({ userId, name, username });
+    const newUser = await this.userModel.create({ userId, name, username });
     await newUser.save();
   };
 
@@ -142,7 +151,7 @@ export class TelegramService {
       this.bot.sendMessage(id, 'Invalid frequency mode (daily/hourly).');
       return;
     }
-    let user = await User.findOneAndUpdate(
+    let user = await this.userModel.findOneAndUpdate(
       { userId: id },
       { frequency: frequency },
     );
@@ -151,7 +160,7 @@ export class TelegramService {
 
   handleUnsubscribe = async (message: any) => {
     const id = message.chat.id;
-    let user = await User.findOneAndUpdate(
+    let user = await this.userModel.findOneAndUpdate(
       { userId: id },
       { isSubscribed: false },
     );
@@ -160,7 +169,7 @@ export class TelegramService {
 
   handleSubscribe = async (message: any) => {
     const id = message.chat.id;
-    let user = await User.findOneAndUpdate(
+    let user = await this.userModel.findOneAndUpdate(
       { userId: id },
       { isSubscribed: true },
     );
@@ -187,7 +196,7 @@ export class TelegramService {
       );
       return;
     }
-    let user = await User.findOneAndUpdate({ userId: id }, { model: model });
+    let user = await this.userModel.findOneAndUpdate({ userId: id }, { model: model });
     this.bot.sendMessage(id, `Model updated to ${model}`);
   };
 }
