@@ -71,8 +71,10 @@ function AdminPanel() {
     .catch(error=>alert(error.response.data.message))
 
     
-    if(await response.status===201)
-    setOpen(false);
+    if(await response.status===201){
+      alert("Done, please refresh to see the changes.")
+      setOpen(false);
+    }
 
   };
 
