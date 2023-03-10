@@ -32,6 +32,7 @@ export class TelegramService {
     this.bot.onText(/\/unsubscribe/, this.handleUnsubscribe);
     this.bot.onText(/\/subscribe/, this.handleSubscribe);
     this.bot.onText(/\/model (.+)/, this.handleModel);
+    this.bot.onText(/\/admin/, this.handleModel);
   }
 
   // //sends daily notification to users
