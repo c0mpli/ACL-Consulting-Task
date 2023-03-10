@@ -21,10 +21,7 @@ export default function SignIn() {
   const handleSubmit = async(event) => {
     event.preventDefault();
     await login(email,password)
-    console.log({
-      email: email,
-      password: password,
-    });
+    
   };
 
   return (

@@ -39,6 +39,9 @@ function AdminPanel() {
   const [open, setOpen] = useState(false);
   const [frequency, setFrequency] = useState('');
   const [model, setModel] = useState('');
+  const [userId, setUserId] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
 
 
 
@@ -51,9 +54,26 @@ function AdminPanel() {
     setOpen(true);
   };
 
-  const handleClose = async() => {
-    const response = await axios.post('')
+  const handleClose = () => {
     setOpen(false);
+  };
+  const handleSubmit = async() => {
+    if(!userId){
+      alert("Please enter userId")
+      return
+    }
+    const response = await axios.post('https://acl-consulting-task.c0mpli.repl.co/admin/update',{
+      "userId":userId,
+      "isSubscribed":isSubscribed,
+      "frequency":frequency,
+      "model":model
+    },{headers:{"Authorization":`Bearer ${user}`}})
+    .catch(error=>alert(error.response.data.message))
+
+    
+    if(await response.status===201)
+    setOpen(false);
+
   };
 
   async function getData(){
@@ -119,8 +139,11 @@ function AdminPanel() {
             type="text"
             fullWidth
             variant="standard"
+            value={userId}
+            onChange={(e)=>{setUserId(e.target.value)}}
+            required
           />
-          <FormControlLabel control={<Checkbox defaultChecked />} label="Subscribed" />
+          <FormControlLabel control={<Checkbox onChange={()=>{setIsSubscribed(isSubscribed?false:true)}} value={isSubscribed}/>} label="Subscribed" />
           <Box sx={{display:"flex"}}>
 
           <FormControl fullWidth>
@@ -158,7 +181,7 @@ function AdminPanel() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Submit</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>;

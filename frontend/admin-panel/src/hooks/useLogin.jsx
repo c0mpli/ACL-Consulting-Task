@@ -12,14 +12,10 @@ function useLogin() {
     setError(null);
 
     const response = await axios.post('https://acl-consulting-task.c0mpli.repl.co/auth/login',{"email":email,"password":password})
+    .catch(error=>{alert(error.response.data.message);setIsLoading(false)})
     const json = await response.data.token
-    console.log(json)
-    console.log(response)
+    
 
-    if(response.status!=201){
-      setIsLoading(false)
-      setError(json.error)
-    }
     if(response.status===201){
       localStorage.setItem('user',JSON.stringify(json))
       dispatch({type:'LOGIN',payload:json})
