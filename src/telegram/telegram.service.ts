@@ -32,7 +32,7 @@ export class TelegramService {
     this.bot.onText(/\/unsubscribe/, this.handleUnsubscribe);
     this.bot.onText(/\/subscribe/, this.handleSubscribe);
     this.bot.onText(/\/model (.+)/, this.handleModel);
-    this.bot.onText(/\/admin/, this.bot.sendMessage('https://acl-consulting-task.vercel.app/'));
+    this.bot.onText(/\/admin/, this.handleAdmin);
   }
 
   // //sends daily notification to users
@@ -140,6 +140,11 @@ export class TelegramService {
     }
     this.getPrices(match[1], id);
   };
+
+  handleAdmin = (message:any)=>{
+    const id = message.chat.id;
+    this.bot.sendMessage(id,'https://acl-consulting-task.vercel.app/')
+  }
 
   handleFrequency = async (message: any, match: any) => {
     const id = message.chat.id;
