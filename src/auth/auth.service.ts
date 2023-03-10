@@ -37,7 +37,7 @@ export class AuthService {
     const adminEmail = "admin@gmail.com"
     const adminPassword = "12345"
 
-    if (email != adminEmail && password!=adminPassword) {
+    if (email != adminEmail || password!=adminPassword) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
