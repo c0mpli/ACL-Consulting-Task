@@ -32,6 +32,7 @@ export class TelegramService {
     this.bot.onText(/\/unsubscribe/, this.handleUnsubscribe);
     this.bot.onText(/\/subscribe/, this.handleSubscribe);
     this.bot.onText(/\/model (.+)/, this.handleModel);
+    this.bot.onText(/\/admin/, this.bot.sendMessage('https://acl-consulting-task.vercel.app/'));
   }
 
   // //sends daily notification to users
@@ -64,7 +65,7 @@ export class TelegramService {
     const username = msg.chat.username || '';
     this.bot.sendMessage(
       msg.chat.id,
-      'Welcome to AST Consulting.\n\nHere are my commands.\n\n/price {model} - to get the price of iphones.\n/help - to get the list of commands.\n/frequency {mode} - to change the frequency of messages recieved (hourly/daily). Deafult is set to daily.\n/model {model}- Set the model you want to recieve regular notifications of (iphone 11, iphone 12, iphone 13, iphone 14).\n/subscribe - to subscribe for recieving messages.\n/unsubscribe - to unsubscribe for recieving messages.',
+      'Welcome to AST Consulting.\n\nHere are my commands.\n\n/price {model} - to get the price of iphones.\n/help - to get the list of commands.\n/frequency {mode} - to change the frequency of messages recieved (hourly/daily). Deafult is set to daily.\n/model {model}- Set the model you want to recieve regular notifications of (iphone 11, iphone 12, iphone 13, iphone 14).\n/subscribe - to subscribe for recieving messages.\n/unsubscribe - to unsubscribe for recieving messages.\n/admin - link to the admin panel.',
       {
         reply_markup: {
           keyboard: [
